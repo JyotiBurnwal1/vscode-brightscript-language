@@ -369,6 +369,13 @@ export class RekeyAndPackageCommand {
         }
         rokuDeployOptions.packageConfig = 'launch.json: ' + selectedConfig.rootDir;
 
+        if (selectedConfig?.profiling?.dir.includes('${workspaceFolder}')) {
+            await this.brightScriptCommands.getWorkspacePath();
+            let workspacePath = this.brightScriptCommands.workspacePath;
+
+            selectedConfig.profiling.dir = path.normalize(selectedConfig.profiling.dir.replace('${workspaceFolder}', workspacePath));
+        }
+
         if (!selectedConfig.host.includes('${')) {
             rokuDeployOptions.host = selectedConfig.host;
         }

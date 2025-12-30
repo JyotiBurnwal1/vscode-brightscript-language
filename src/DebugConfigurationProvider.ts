@@ -63,6 +63,11 @@ export class BrightScriptDebugConfigurationProvider implements DebugConfiguratio
         showHiddenVariables: false,
         enableDebuggerAutoRecovery: false,
         stopDebuggerOnAppExit: false,
+        profiling: {
+            enable: false,
+            dir: '${workspaceFolder}/profiles/',
+            filename: '${appTitle}-${timestamp}.bsprof'
+        },
         autoRunSgDebugCommands: [],
         files: [...DefaultFiles],
         enableSourceMaps: true,

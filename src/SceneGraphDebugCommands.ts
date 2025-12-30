@@ -14,7 +14,7 @@ export class SceneGraphDebugCommands {
         let subscriptions = context.subscriptions;
 
         subscriptions.push(vscode.commands.registerCommand('extension.brightscript.startTracing', async () => {
-            // await this.logCommandOutput(async (commandController) => commandController.perfettoTracing('start'));
+            await this.logCommandOutput(async (commandController) => commandController.startTracing());
             await vscode.commands.executeCommand(
                 'setContext',
                 'brightscript.tracingActive',
@@ -23,7 +23,7 @@ export class SceneGraphDebugCommands {
         }));
 
         subscriptions.push(vscode.commands.registerCommand('extension.brightscript.stopTracing', async () => {
-            // await this.logCommandOutput(async (commandController) => commandController.perfettoTracing('stop'));
+            await this.logCommandOutput(async (commandController) => commandController.stopTracing());
             await vscode.commands.executeCommand(
                 'setContext',
                 'brightscript.tracingActive',
