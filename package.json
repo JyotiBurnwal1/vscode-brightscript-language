@@ -229,6 +229,18 @@
                     "group": "navigation"
                 }
             ],
+            "debug/toolBar": [
+                {
+                    "command": "extension.brightscript.startTracing",
+                    "group": "navigation@100",
+                    "when": "inDebugMode && !brightscript.tracingActive"
+                },
+                {
+                    "command": "extension.brightscript.stopTracing",
+                    "group": "navigation@100",
+                    "when": "inDebugMode && brightscript.tracingActive"
+                }
+            ],
             "view/title": [
                 {
                     "command": "extension.brightscript.rendezvous.toggleSortMethod",
@@ -909,6 +921,32 @@
                                 "type": "boolean",
                                 "description": "If true, will terminate the debug session if app exit is detected. This option is ignored when enableDebugProtocol is set to true. This currently relies on 9.1+ launch beacon notifications, so will not work on a pre 9.1 device.",
                                 "default": true
+                            },
+                            "profiling": {
+                                "type": "object",
+                                "description": "Configuration for profiling functionality",
+                                "default": {
+                                    "enable": false,
+                                    "dir": "${workspaceFolder}/profiles",
+                                    "filename": "${appTitle}_${timestamp}.prof"
+                                },
+                                "properties": {
+                                    "enable": {
+                                        "type": "boolean",
+                                        "description": "Whether profiling is enabled",
+                                        "default": false
+                                    },
+                                    "dir": {
+                                        "type": "string",
+                                        "description": "Directory where profile files should be stored",
+                                        "default": "${workspaceFolder}/profiles"
+                                    },
+                                    "filename": {
+                                        "type": "string",
+                                        "description": "The name of the profile file. Can include variables like ${appTitle} and ${timestamp}",
+                                        "default": "${appTitle}_${timestamp}.prof"
+                                    }
+                                }
                             },
                             "enableSourceMaps": {
                                 "type": "boolean",
@@ -2413,6 +2451,33 @@
                         "default": true,
                         "scope": "resource"
                     },
+                    "brightscript.debug.profiling": {
+                        "type": "object",
+                        "description": "Configuration for profiling functionality",
+                        "default": {
+                            "enable": false,
+                            "dir": "${workspaceFolder}/profiles",
+                            "filename": "${appTitle}_${timestamp}.prof"
+                        },
+                        "properties": {
+                            "enable": {
+                                "type": "boolean",
+                                "description": "Whether profiling is enabled",
+                                "default": false
+                            },
+                            "dir": {
+                                "type": "string",
+                                "description": "Directory where profile files should be stored",
+                                "default": "${workspaceFolder}/profiles"
+                            },
+                            "filename": {
+                                "type": "string",
+                                "description": "The name of the profile file. Can include variables like ${appTitle} and ${timestamp}",
+                                "default": "${appTitle}_${timestamp}.prof"
+                            }
+                        },
+                        "scope": "resource"
+                    },
                     "brightscript.debug.packagePort": {
                         "type": "number",
                         "description": "The port used for package-related requests. This is mainly used for things like emulators, or when your roku is behind a firewall with a port-forward.",
@@ -2692,6 +2757,16 @@
             }
         ],
         "commands": [
+            {
+                "command": "extension.brightscript.startTracing",
+                "title": "Start Perfetto Tracing",
+                "icon": "$(record)"
+            },
+            {
+                "command": "extension.brightscript.stopTracing",
+                "title": "Stop Perfetto Tracing",
+                "icon": "$(circle-large-filled)"
+            },
             {
                 "command": "extension.brightscript.showReleaseNotes",
                 "title": "Show Release Notes",
