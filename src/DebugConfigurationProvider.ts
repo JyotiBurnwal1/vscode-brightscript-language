@@ -12,7 +12,7 @@ import type {
 } from 'vscode';
 import * as vscode from 'vscode';
 import type { LaunchConfiguration } from 'roku-debug';
-import { fileUtils } from 'roku-debug';
+import { fileUtils, PerfettoControls } from 'roku-debug';
 import { util } from './util';
 import type { TelemetryManager } from './managers/TelemetryManager';
 import type { ActiveDeviceManager } from './ActiveDeviceManager';
@@ -106,7 +106,7 @@ export class BrightScriptDebugConfigurationProvider implements DebugConfiguratio
             result = await this.processPasswordParameter(result);
             result = await this.processDeepLinkUrlParameter(result);
             result = await this.processLogfilePath(folder, result);
-
+            
             const statusbarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 9_999_999);
             statusbarItem.text = '$(sync~spin) Fetching device info';
             statusbarItem.show();
@@ -120,6 +120,11 @@ export class BrightScriptDebugConfigurationProvider implements DebugConfiguratio
 
             if (deviceInfo && !deviceInfo.developerEnabled) {
                 throw new Error(`Cannot deploy: developer mode is disabled on '${result.host}'`);
+            }
+            if (config?.profiling?.enable) {
+                const perfettoControls = new PerfettoControls(result.host);
+                const enableResponse = await perfettoControls.enableTracing();
+                vscode.window.showInformationMessage(enableResponse.message);
             }
 
             await this.context.workspaceState.update('enableDebuggerAutoRecovery', result.enableDebuggerAutoRecovery);
