@@ -66,7 +66,7 @@ export class BrightScriptDebugConfigurationProvider implements DebugConfiguratio
         profiling: {
             enable: false,
             dir: '${workspaceFolder}/profiles/',
-            filename: '${appTitle}-${timestamp}.bsprof'
+            filename: '${appTitle}-${timestamp}.perfetto-trace'
         },
         autoRunSgDebugCommands: [],
         files: [...DefaultFiles],

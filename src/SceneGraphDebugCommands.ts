@@ -189,46 +189,46 @@ export class SceneGraphDebugCommands {
         
         switch (command) {
             case 'start':
-                this.showInfo('Starting perfetto Tracing!');
+                this.showInfo('Starting Perfetto Tracing!');
                 
                 const startResponse = await perfettoController.startTracing();
                 
                 if (startResponse.error) {
-                    this.showError('Error starting perfetto tracing: ' + startResponse.message);
+                    this.showError('Error Starting Perfetto Tracing: ' + startResponse.message);
                     return;
                 } else {
-                    this.showInfo('Perfetto tracing started: ' + startResponse.message);
+                    this.showInfo('Perfetto Tracing Started: ' + startResponse.message);
                 }
                 break;
                 
             case 'stop':
-                this.showInfo('Stopping perfetto Tracing!');
+                this.showInfo('Stopping Perfetto Tracing!');
                 
                 const stopResponse = await perfettoController.stopTracing();
                 
                 if (stopResponse.error) {
-                    this.showError('Error stopping perfetto tracing: ' + stopResponse.message);
+                    this.showError('Error Stopping Perfetto Tracing: ' + stopResponse.message);
                     return;
                 } else {
-                    this.showInfo('Perfetto tracing stopped: ' + stopResponse.message);
+                    this.showInfo('Perfetto Tracing Stopped: ' + stopResponse.message);
                 }
                 break;
                 
             case 'enable':
-                this.showInfo('Enabling perfetto Tracing!');
+                this.showInfo('Enabling Perfetto Tracing!');
                 
                 const enableResponse = await perfettoController.enableTracing();
                 
                 if (enableResponse.error) {
-                    this.showError('Error enabling perfetto tracing: ' + enableResponse.message);
+                    this.showError('Error Enabling Perfetto Tracing: ' + enableResponse.message);
                     return;
                 } else {
-                    this.showInfo('Perfetto tracing enabled: ' + enableResponse.message);
+                    this.showInfo('Perfetto Tracing Enabled: ' + enableResponse.message);
                 }
                 break;
                 
             default:
-                this.showError('Unknown perfetto command: ' + command);
+                this.showError('Unknown Perfetto command: ' + command);
                 break;
         }
     }
