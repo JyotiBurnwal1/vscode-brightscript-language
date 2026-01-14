@@ -17,6 +17,7 @@ import { LogOutputManager } from './LogOutputManager';
 import { RendezvousViewProvider } from './viewProviders/RendezvousViewProvider';
 import { OnlineDevicesViewProvider } from './viewProviders/OnlineDevicesViewProvider';
 import { sceneGraphDebugCommands } from './SceneGraphDebugCommands';
+import { perfettoControlCommands } from './PerfettoControlCommands';
 import { GlobalStateManager } from './GlobalStateManager';
 import { languageServerManager } from './LanguageServerManager';
 import { TelemetryManager } from './managers/TelemetryManager';
@@ -180,6 +181,8 @@ export class Extension {
 
         //register all commands for this extension
         this.brightScriptCommands.registerCommands();
+        vscode.window.showErrorMessage(JSON.stringify(Object.keys(context)));
+        perfettoControlCommands.registerPerfettoControlCommands(context);
         sceneGraphDebugCommands.registerCommands(context, this.sceneGraphDebugChannel);
 
         vscode.debug.onDidStartDebugSession((e) => {

@@ -152,7 +152,8 @@
     "activationEvents": [
         "onLanguage:xml",
         "workspaceContains:**/manifest",
-        "workspaceContains:**/bsconfig.json"
+        "workspaceContains:**/bsconfig.json",
+        "onDebug"
     ],
     "contributes": {
         "viewsContainers": {
@@ -169,6 +170,13 @@
                 {
                     "id": "onlineDevicesView",
                     "name": "Devices"
+                }
+            ],
+            "explorer": [
+                {
+                    "type": "webview",
+                    "id": "rokuPerfettoControlWebviewView",
+                    "name": "Perfetto Control"
                 }
             ],
             "debug": [
@@ -402,6 +410,21 @@
             ],
             "commandPalette": []
         },
+        "customEditors": [
+            {
+                "viewType": "perfTraceViewer.editor",
+                "displayName": "Performance Trace Viewer",
+                "selector": [
+                {
+                    "filenamePattern": "*.pftrace"
+                },
+                {
+                    "filenamePattern": "*.perfetto-trace"
+                }
+                ],
+                "priority": "default"
+            }
+        ],
         "breakpoints": [
             {
                 "language": "brightscript"

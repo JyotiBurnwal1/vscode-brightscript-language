@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import type { SceneGraphCommandResponse } from 'roku-debug';
-import { PerfettoControls, SceneGraphDebugCommandController } from 'roku-debug';
+import { SceneGraphDebugCommandController } from 'roku-debug';
 
 export class SceneGraphDebugCommands {
     private outputChannel: vscode.OutputChannel;
@@ -11,24 +11,6 @@ export class SceneGraphDebugCommands {
         this.context = context;
         this.outputChannel = outputChannel;
         let subscriptions = context.subscriptions;
-
-        subscriptions.push(vscode.commands.registerCommand('extension.brightscript.startTracing', async () => {
-            await this.perfettoControls("start");
-            await vscode.commands.executeCommand(
-                'setContext',
-                'brightscript.tracingActive',
-                true
-            );
-        }));
-
-        subscriptions.push(vscode.commands.registerCommand('extension.brightscript.stopTracing', async () => {
-            await this.perfettoControls("stop");
-            await vscode.commands.executeCommand(
-                'setContext',
-                'brightscript.tracingActive',
-                false
-            );
-        }));
 
         subscriptions.push(vscode.commands.registerCommand('extension.brightscript.bsprofPause', async () => {
             await this.logCommandOutput(async (commandController) => commandController.bsprof('pause'));
@@ -181,64 +163,6 @@ export class SceneGraphDebugCommands {
         for (let lineGroup of lineGroups) {
             this.outputChannel.append(lineGroup.join('\n') + '\n');
         }
-    }
-
-    private async perfettoControls(command: string) {
-        await this.getRemoteHost();
-        const perfettoController = new PerfettoControls(this.host);
-        
-        switch (command) {
-            case 'start':
-                this.showInfo('Starting Perfetto Tracing!');
-                
-                const startResponse = await perfettoController.startTracing();
-                
-                if (startResponse.error) {
-                    this.showError('Error Starting Perfetto Tracing: ' + startResponse.message);
-                    return;
-                } else {
-                    this.showInfo('Perfetto Tracing Started: ' + startResponse.message);
-                }
-                break;
-                
-            case 'stop':
-                this.showInfo('Stopping Perfetto Tracing!');
-                
-                const stopResponse = await perfettoController.stopTracing();
-                
-                if (stopResponse.error) {
-                    this.showError('Error Stopping Perfetto Tracing: ' + stopResponse.message);
-                    return;
-                } else {
-                    this.showInfo('Perfetto Tracing Stopped: ' + stopResponse.message);
-                }
-                break;
-                
-            case 'enable':
-                this.showInfo('Enabling Perfetto Tracing!');
-                
-                const enableResponse = await perfettoController.enableTracing();
-                
-                if (enableResponse.error) {
-                    this.showError('Error Enabling Perfetto Tracing: ' + enableResponse.message);
-                    return;
-                } else {
-                    this.showInfo('Perfetto Tracing Enabled: ' + enableResponse.message);
-                }
-                break;
-                
-            default:
-                this.showError('Unknown Perfetto command: ' + command);
-                break;
-        }
-    }
-
-    private showInfo(msg: string) {
-        vscode.window.showInformationMessage(msg);
-    }
-
-    private showError(msg: string) {
-        vscode.window.showErrorMessage(msg);
     }
 
     private chunkArray(arr: Array<any>, chunkSize = 20) {
