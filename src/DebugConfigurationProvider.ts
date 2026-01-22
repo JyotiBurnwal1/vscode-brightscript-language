@@ -64,7 +64,7 @@ export class BrightScriptDebugConfigurationProvider implements DebugConfiguratio
         enableDebuggerAutoRecovery: false,
         stopDebuggerOnAppExit: false,
         profiling: {
-            enable: false,
+            enabled: false,
             dir: '${workspaceFolder}/profiles/',
             filename: '${appTitle}-${timestamp}.perfetto-trace'
         },
@@ -106,7 +106,7 @@ export class BrightScriptDebugConfigurationProvider implements DebugConfiguratio
             result = await this.processPasswordParameter(result);
             result = await this.processDeepLinkUrlParameter(result);
             result = await this.processLogfilePath(folder, result);
-            
+
             const statusbarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 9_999_999);
             statusbarItem.text = '$(sync~spin) Fetching device info';
             statusbarItem.show();
@@ -121,10 +121,9 @@ export class BrightScriptDebugConfigurationProvider implements DebugConfiguratio
             if (deviceInfo && !deviceInfo.developerEnabled) {
                 throw new Error(`Cannot deploy: developer mode is disabled on '${result.host}'`);
             }
-            if (config?.profiling?.enable) {
+            if (config?.profiling?.enabled) {
                 const perfettoControls = new PerfettoControls(result.host);
-                const enableResponse = await perfettoControls.enableTracing();
-                vscode.window.showInformationMessage(enableResponse.message);
+                perfettoControls.enableTracing();
             }
 
             await this.context.workspaceState.update('enableDebuggerAutoRecovery', result.enableDebuggerAutoRecovery);

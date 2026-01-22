@@ -950,14 +950,14 @@
                                 "type": "object",
                                 "description": "Configuration for profiling functionality",
                                 "default": {
-                                    "enable": false,
+                                    "enabled": false,
                                     "dir": "${workspaceFolder}/profiles",
                                     "filename": "${appTitle}_${timestamp}.perfetto-trace"
                                 },
                                 "properties": {
-                                    "enable": {
+                                    "enabled": {
                                         "type": "boolean",
-                                        "description": "Whether profiling is enabled",
+                                        "description": "Should profiling be enabled",
                                         "default": false
                                     },
                                     "dir": {
@@ -2479,14 +2479,14 @@
                         "type": "object",
                         "description": "Configuration for profiling functionality",
                         "default": {
-                            "enable": false,
+                            "enabled": false,
                             "dir": "${workspaceFolder}/profiles",
                             "filename": "${appTitle}_${timestamp}.perfetto-trace"
                         },
                         "properties": {
-                            "enable": {
+                            "enabled": {
                                 "type": "boolean",
-                                "description": "Whether profiling is enabled",
+                                "description": "Should profiling be enabled",
                                 "default": false
                             },
                             "dir": {
@@ -2784,12 +2784,12 @@
             {
                 "command": "extension.brightscript.startTracing",
                 "title": "Start Perfetto Tracing",
-                "icon": "$(record)"
+                "icon": "./images/icons/record-red.svg"
             },
             {
                 "command": "extension.brightscript.stopTracing",
                 "title": "Stop Perfetto Tracing",
-                "icon": "$(circle-large-filled)"
+                "icon": "./images/icons/stop-tracing.svg"
             },
             {
                 "command": "extension.brightscript.showReleaseNotes",

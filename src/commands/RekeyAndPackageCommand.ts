@@ -326,13 +326,6 @@ export class RekeyAndPackageCommand {
         }
     }
 
-    private async workspacePath() {
-        await this.brightScriptCommands.getWorkspacePath();
-        let workspacePath = this.brightScriptCommands.workspacePath;
-        return workspacePath;
-    }
-
-
     private async packageFromRokuDeploy(rokuDeployOptions) {
         const options: vscode.OpenDialogOptions = {
             canSelectMany: false,
@@ -368,19 +361,19 @@ export class RekeyAndPackageCommand {
         }
 
         if (selectedConfig.rootDir?.includes('${workspaceFolder}')) {
-            let workspacePath = await this.workspacePath();
+            let workspacePath = await this.brightScriptCommands.getWorkspacePath();
             selectedConfig.rootDir = path.normalize(selectedConfig.rootDir.replace('${workspaceFolder}', workspacePath));
         }
         rokuDeployOptions.packageConfig = 'launch.json: ' + selectedConfig.rootDir;
 
         if (selectedConfig?.profiling?.dir?.includes('${workspaceFolder}')) {
-            let workspacePath = await this.workspacePath();
+            let workspacePath = await this.brightScriptCommands.getWorkspacePath();
 
             selectedConfig.profiling.dir = path.normalize(selectedConfig.profiling.dir.replace('${workspaceFolder}', workspacePath));
         }
 
         if (selectedConfig?.profiling && !selectedConfig.profiling.dir) {
-            let workspacePath = await this.workspacePath();
+            let workspacePath = await this.brightScriptCommands.getWorkspacePath();
             selectedConfig.profiling.dir = `${workspacePath}/traces/`;
         }
 
