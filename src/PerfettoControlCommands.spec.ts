@@ -1,120 +1,58 @@
-// import * as sinon from 'sinon';
-// import * as vscode from 'vscode';
-// import { PerfettoControlCommands } from "./PerfettoControlCommands"
+import { expect } from 'chai';
+import * as vscode from 'vscode';
+import * as fsExtra from 'fs-extra';
+import * as sinon from 'sinon';
+import { PerfettoControls } from 'roku-debug';
+import { PerfettoControlCommands } from './PerfettoControlCommands';
 
-// describe('PerfettoControlCommands', () => {
-//   afterEach(() => {
-//     sinon.restore();
-//   });
+describe('PerfettoControlCommands', () => {
+    let context: vscode.ExtensionContext;
+    let getHost: sinon.SinonStub;
 
-//   it('registers start and stop tracing commands', () => {
-//     const registerCommandStub = sinon.stub(vscode.commands, 'registerCommand');
-//     const registerEditorStub = sinon.stub(vscode.window, 'registerCustomEditorProvider');
+    beforeEach(() => {
+        context = { subscriptions: [] } as any;
+        getHost = sinon.stub().resolves('127.0.0.1');
+    });
 
-//     const context: any = {
-//       subscriptions: [],
-//     };
+    afterEach(() => {
+        sinon.restore();
+    });
 
-//     const cmds = new PerfettoControlCommands();
-//     cmds.registerPerfettoControlCommands(context);
+    it('registers all perfetto commands', () => {
+        const registerStub = sinon.stub(vscode.commands, 'registerCommand');
 
-//     sinon.assert.calledWith(
-//       registerCommandStub,
-//       'extension.brightscript.startTracing',
-//       sinon.match.func
-//     );
+        const commands = new PerfettoControlCommands();
+        commands.registerPerfettoControlCommands(context, getHost);
 
-//     sinon.assert.calledWith(
-//       registerCommandStub,
-//       'extension.brightscript.stopTracing',
-//       sinon.match.func
-//     );
+        expect(registerStub.callCount).to.equal(3);
+        expect(context.subscriptions.length).to.equal(3);
+    });
 
-//     sinon.assert.calledOnce(registerEditorStub);
-//   });
+    it('startTracing command starts tracing and sets context', async () => {
+        sinon.stub(fsExtra, 'ensureDirSync');
+        sinon.stub(vscode.commands, 'executeCommand');
 
-//   it('handleTracingOperation shows success message', async () => {
-//     const infoStub = sinon.stub(vscode.window, 'showInformationMessage');
-//     const errorStub = sinon.stub(vscode.window, 'showErrorMessage');
+        const startStub = sinon.stub(
+            PerfettoControls.prototype,
+            'startTracing'
+        ).resolves();
 
-//     const cmds = new PerfettoControlCommands();
+        let startHandler: Function | undefined;
 
-//     await (cmds as any).handleTracingOperation(
-//       'Start',
-//       async () => ({ message: 'ok', error: false })
-//     );
+        sinon.stub(vscode.commands, 'registerCommand')
+            .callsFake((cmd, cb) => {
+                if (cmd === 'extension.brightscript.startTracing') {
+                    startHandler = cb;
+                }
+                return {} as any;
+            });
 
-//     sinon.assert.calledWith(infoStub, 'Starting perfetto Tracing!');
-//     sinon.assert.calledWith(infoStub, 'Perfetto tracing started: ok');
-//     sinon.assert.notCalled(errorStub);
-//   });
+        const commands = new PerfettoControlCommands();
+        commands.registerPerfettoControlCommands({ subscriptions: [] } as any, async () => '127.0.0.1');
 
-//   it('handleTracingOperation shows error message on failure', async () => {
-    
-//     const errorStub = sinon.stub(vscode.window, 'showErrorMessage');
+        await startHandler!();
 
-//     const cmds = new PerfettoControlCommands();
+        expect(startStub.calledOnce).to.be.true;
+    });
 
-//     await (cmds as any).handleTracingOperation(
-//       'Stop',
-//       async () => ({ message: 'failed', error: true })
-//     );
-
-//     sinon.assert.calledWith(
-//       errorStub,
-//       'Error stoping perfetto tracing: failed'
-//     );
-//   });
-
-//   it('createFolderIfNotExists creates folder when workspace exists', async () => {
-//     sinon.stub(vscode.workspace, 'workspaceFolders').value([
-//       { uri: vscode.Uri.file('/workspace') },
-//     ]);
-
-//     const createDirStub = sinon
-//       .stub(vscode.workspace.fs, 'createDirectory')
-//       .resolves();
-
-//     const cmds = new PerfettoControlCommands();
-//     const uri = await (cmds as any).createFolderIfNotExists('perfetto');
-
-//     sinon.assert.calledOnce(createDirStub);
-//     sinon.assert.match(uri.fsPath, /perfetto$/);
-//   });
-
-//   it('createFolderIfNotExists throws error when no workspace folder exists', async () => {
-//     sinon.stub(vscode.workspace, 'workspaceFolders').value([]);
-//     const errorStub = sinon.stub(vscode.window, 'showErrorMessage');
-
-//     const cmds = new PerfettoControlCommands();
-
-//     try {
-//       await (cmds as any).createFolderIfNotExists('perfetto');
-//       throw new Error('Expected error to be thrown');
-//     } catch (err: any) {
-//       sinon.assert.calledOnce(errorStub);
-//       sinon.assert.match(err.message, 'No workspace folder found.');
-//     }
-//   });
-
-//   it('getRemoteHost uses stored host from workspaceState', async () => {
-//     const context: any = {
-//       workspaceState: {
-//         get: sinon.stub().resolves('192.168.1.10'),
-//         update: sinon.stub().resolves(),
-//       },
-//     };
-
-//     const cmds = new PerfettoControlCommands();
-//     (cmds as any).context = context;
-
-//     await cmds.getRemoteHost();
-
-//     sinon.assert.calledWith(context.workspaceState.get, 'remoteHost');
-//     sinon.assert.calledWith(
-//       context.workspaceState.update,
-//       'remoteHost',
-//       '192.168.1.10'
-//     );
-//   });
-// });
+});
