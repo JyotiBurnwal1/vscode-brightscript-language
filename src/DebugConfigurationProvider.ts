@@ -12,7 +12,7 @@ import type {
 } from 'vscode';
 import * as vscode from 'vscode';
 import type { LaunchConfiguration } from 'roku-debug';
-import { fileUtils, PerfettoControls } from 'roku-debug';
+import { fileUtils, PerfettoManager } from 'roku-debug';
 import { util } from './util';
 import type { TelemetryManager } from './managers/TelemetryManager';
 import type { ActiveDeviceManager } from './ActiveDeviceManager';
@@ -122,8 +122,8 @@ export class BrightScriptDebugConfigurationProvider implements DebugConfiguratio
                 throw new Error(`Cannot deploy: developer mode is disabled on '${result.host}'`);
             }
             if (config?.profiling?.enabled) {
-                const perfettoControls = new PerfettoControls(result.host);
-                perfettoControls.enableTracing();
+                const perfettoManager = new PerfettoManager(result.host);
+                perfettoManager.enableTracing();
             }
 
             await this.context.workspaceState.update('enableDebuggerAutoRecovery', result.enableDebuggerAutoRecovery);

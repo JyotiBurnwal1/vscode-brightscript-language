@@ -1,32 +1,32 @@
 import * as vscode from 'vscode';
-import { PerfettoControls } from 'roku-debug';
-import * as fsExtra from 'fs-extra';
+import { PerfettoManager } from 'roku-debug';
 
 export class PerfettoControlCommands {
 
     private getHost!: () => Promise<string>;
 
-    public registerPerfettoControlCommands(
+    public async registerPerfettoControlCommands(
         context: vscode.ExtensionContext,
         getHost: () => Promise<string>
     ) {
         this.getHost = getHost;
+        const host = await this.getHost();
+        const perfettoController = new PerfettoManager(host);
 
         context.subscriptions.push(
             vscode.commands.registerCommand(
                 'extension.brightscript.startTracing',
                 async () => {
-                    const host = await this.getHost();
-                    const perfettoController = new PerfettoControls(host);
-
-                    fsExtra.ensureDirSync('perfetto');
-                    await perfettoController.startTracing();
-
-                    await vscode.commands.executeCommand(
-                        'setContext',
-                        'brightscript.tracingActive',
-                        true
-                    );
+                    let response = await perfettoController.startTracing();
+                    if (response?.error) {
+                        vscode.window.showErrorMessage(response.error);
+                    } else {
+                        await vscode.commands.executeCommand(
+                            'setContext',
+                            'brightscript.tracingActive',
+                            true
+                        );
+                    }
                 }
             )
         );
@@ -35,17 +35,17 @@ export class PerfettoControlCommands {
             vscode.commands.registerCommand(
                 'extension.brightscript.stopTracing',
                 async () => {
-                    const host = await this.getHost();
-                    const perfettoController = new PerfettoControls(host);
-
-                    await perfettoController.stopTracing();
-
-                    await vscode.commands.executeCommand(
-                        'setContext',
-                        'brightscript.tracingActive',
-                        false
-                    );
-
+                    let response = await perfettoController.stopTracing();
+                    if (response?.error) {
+                        vscode.window.showErrorMessage(response.error);
+                        return;
+                    } else {
+                        await vscode.commands.executeCommand(
+                            'setContext',
+                            'brightscript.tracingActive',
+                            false
+                        );
+                    }
                     this.openInBrowser('https://ui.perfetto.dev/#!');
                 }
             )
@@ -55,10 +55,10 @@ export class PerfettoControlCommands {
             vscode.commands.registerCommand(
                 'extension.brightscript.enableTracing',
                 async () => {
-                    const host = await this.getHost();
-                    const perfettoController = new PerfettoControls(host);
-
-                    await perfettoController.enableTracing();
+                    let response = await perfettoController.enableTracing();
+                    if (response?.error) {
+                        vscode.window.showErrorMessage(response.error);
+                    }
                 }
             )
         );
