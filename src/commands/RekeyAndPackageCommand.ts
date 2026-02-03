@@ -359,22 +359,19 @@ export class RekeyAndPackageCommand {
             let selectedIndex = configNames.indexOf(selectedConfigName);
             selectedConfig = configurations[selectedIndex];
         }
-
+        
+        let workspacePath = await this.brightScriptCommands.getWorkspacePath();
         if (selectedConfig.rootDir?.includes('${workspaceFolder}')) {
-            let workspacePath = await this.brightScriptCommands.getWorkspacePath();
             selectedConfig.rootDir = path.normalize(selectedConfig.rootDir.replace('${workspaceFolder}', workspacePath));
         }
         rokuDeployOptions.packageConfig = 'launch.json: ' + selectedConfig.rootDir;
 
-        if (selectedConfig?.profiling?.dir?.includes('${workspaceFolder}')) {
-            let workspacePath = await this.brightScriptCommands.getWorkspacePath();
-
-            selectedConfig.profiling.dir = path.normalize(selectedConfig.profiling.dir.replace('${workspaceFolder}', workspacePath));
+        if (selectedConfig?.profiling?.perfettoEvent?.dir?.includes('${workspaceFolder}')) {
+            selectedConfig.profiling.perfettoEvent.dir = path.normalize(selectedConfig.profiling.perfettoEvent.dir.replace('${workspaceFolder}', workspacePath));
         }
 
-        if (selectedConfig?.profiling && !selectedConfig.profiling.dir) {
-            let workspacePath = await this.brightScriptCommands.getWorkspacePath();
-            selectedConfig.profiling.dir = `${workspacePath}/traces/`;
+        if (selectedConfig?.profiling?.perfettoEvent && !selectedConfig.profiling.perfettoEvent.dir) {
+            selectedConfig.profiling.perfettoEvent.dir = `${workspacePath}/profiling/`;
         }
 
         if (!selectedConfig.host.includes('${')) {

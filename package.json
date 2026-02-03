@@ -950,25 +950,39 @@
                                 "type": "object",
                                 "description": "Configuration for profiling functionality",
                                 "default": {
-                                    "enabled": false,
-                                    "dir": "${workspaceFolder}/profiles",
-                                    "filename": "${appTitle}_${timestamp}.perfetto-trace"
+                                    "perfettoEvent": {
+                                        "enable": true,
+                                        "dir": "${workspaceFolder}/profiling",
+                                        "filename": "${appTitle}_${timestamp}.perfetto-trace",
+                                        "connectOnStart": false
+                                    }
                                 },
                                 "properties": {
-                                    "enabled": {
-                                        "type": "boolean",
-                                        "description": "Should profiling be enabled",
-                                        "default": false
-                                    },
-                                    "dir": {
-                                        "type": "string",
-                                        "description": "Directory where profile files should be stored",
-                                        "default": "${workspaceFolder}/profiles"
-                                    },
-                                    "filename": {
-                                        "type": "string",
-                                        "description": "The name of the profile file. Can include variables like ${appTitle} and ${timestamp}",
-                                        "default": "${appTitle}_${timestamp}.perfetto-trace"
+                                    "perfettoEvent": {
+                                        "type": "object",
+                                        "description": "Configuration for Perfetto event profiling",
+                                        "properties": {
+                                            "enable": {
+                                                "type": "boolean",
+                                                "description": "Should Perfetto event profiling be enabled",
+                                                "default": true
+                                            },
+                                            "dir": {
+                                                "type": "string",
+                                                "description": "Directory where profile files should be stored",
+                                                "default": "${workspaceFolder}/profiling"
+                                            },
+                                            "filename": {
+                                                "type": "string",
+                                                "description": "The name of the profile file. Can include variables like ${appTitle} and ${timestamp}",
+                                                "default": "${appTitle}_${timestamp}.perfetto-trace"
+                                            },
+                                            "connectOnStart": {
+                                                "type": "boolean",
+                                                "description": "Should profiling connect automatically on debug session start",
+                                                "default": false
+                                            }
+                                        }
                                     }
                                 }
                             },
@@ -2479,25 +2493,39 @@
                         "type": "object",
                         "description": "Configuration for profiling functionality",
                         "default": {
-                            "enabled": false,
-                            "dir": "${workspaceFolder}/profiles",
-                            "filename": "${appTitle}_${timestamp}.perfetto-trace"
+                            "perfettoEvent": {
+                                "enable": true,
+                                "dir": "${workspaceFolder}/profiling",
+                                "filename": "${appTitle}_${timestamp}.perfetto-trace",
+                                "connectOnStart": false
+                            }
                         },
                         "properties": {
-                            "enabled": {
-                                "type": "boolean",
-                                "description": "Should profiling be enabled",
-                                "default": false
-                            },
-                            "dir": {
-                                "type": "string",
-                                "description": "Directory where profile files should be stored",
-                                "default": "${workspaceFolder}/profiles"
-                            },
-                            "filename": {
-                                "type": "string",
-                                "description": "The name of the profile file. Can include variables like ${appTitle} and ${timestamp}",
-                                "default": "${appTitle}_${timestamp}.perfetto-trace"
+                            "perfettoEvent": {
+                                "type": "object",
+                                "description": "Configuration for Perfetto event profiling",
+                                "properties": {
+                                    "enable": {
+                                        "type": "boolean",
+                                        "description": "Should Perfetto event profiling be enabled",
+                                        "default": true
+                                    },
+                                    "dir": {
+                                        "type": "string",
+                                        "description": "Directory where profile files should be stored",
+                                        "default": "${workspaceFolder}/profiling"
+                                    },
+                                    "filename": {
+                                        "type": "string",
+                                        "description": "The name of the profile file. Can include variables like ${appTitle} and ${timestamp}",
+                                        "default": "${appTitle}_${timestamp}.perfetto-trace"
+                                    },
+                                    "connectOnStart": {
+                                        "type": "boolean",
+                                        "description": "Should profiling connect automatically on debug session start",
+                                        "default": false
+                                    }
+                                }
                             }
                         },
                         "scope": "resource"

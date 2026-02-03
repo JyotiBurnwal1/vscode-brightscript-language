@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 export class PerfettoControlCommands {
-    
+
     public registerPerfettoControlCommands(
         context: vscode.ExtensionContext
     ) {
@@ -18,18 +18,19 @@ export class PerfettoControlCommands {
                     }
 
                     try {
-                        const response = await session.customRequest('startTracing');
-                        if (response?.success) {
+                        await session.customRequest('startTracing');
+                        // const response = await session.customRequest('startTracing');
+                        // if (response?.success) {
                             await vscode.commands.executeCommand(
                                 'setContext',
                                 'brightscript.tracingActive',
                                 true
                             );
-                        } else {
-                            vscode.window.showErrorMessage(
-                                response?.error ?? 'Failed to start tracing'
-                            );
-                        }
+                        // } else {
+                        //     vscode.window.showErrorMessage(
+                        //         response?.error ?? 'Failed to start tracing'
+                        //     );
+                        // }
                     } catch (e) {
                         vscode.window.showErrorMessage('Failed to start tracing');
                     }
@@ -50,21 +51,22 @@ export class PerfettoControlCommands {
                     }
 
                     try {
-                        const response = await session.customRequest('stopTracing');
+                        await session.customRequest('stopTracing');
+                        // const response = await session.customRequest('stopTracing');
 
-                        if (response?.success) {
-                            await vscode.commands.executeCommand(
-                                'setContext',
-                                'brightscript.tracingActive',
-                                false
-                            );
+                        // if (response?.success) {
+                                await vscode.commands.executeCommand(
+                                        'setContext',
+                                        'brightscript.tracingActive',
+                                        false
+                                    );
 
                             this.openInBrowser('https://ui.perfetto.dev/#!');
-                        } else {
-                            vscode.window.showErrorMessage(
-                                response?.error ?? 'Failed to stop tracing'
-                            );
-                        }
+                        // } else {
+                        //     vscode.window.showErrorMessage(
+                        //         response?.error ?? 'Failed to stop tracing'
+                        //     );
+                        // }
                     } catch (e) {
                         vscode.window.showErrorMessage('Failed to stop tracing');
                     }
