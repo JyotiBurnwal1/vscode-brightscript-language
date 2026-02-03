@@ -104,7 +104,7 @@ export class PerfettoControlCommands {
                                         false
                                     );
 
-                            this.openInBrowser('https://ui.perfetto.dev/#!');
+                            this.openInSimpleBrowser('https://ui.perfetto.dev/#!');
                         // } else {
                         //     vscode.window.showErrorMessage(
                         //         response?.error ?? 'Failed to stop tracing'
@@ -133,8 +133,11 @@ export class PerfettoControlCommands {
         );
     }
 
-    private openInBrowser(weblink: string): void {
-        vscode.env.openExternal(vscode.Uri.parse(weblink));
+    /**
+     * Open URL in VS Code's built-in Simple Browser (new tab inside VS Code)
+     */
+    private openInSimpleBrowser(url: string): void {
+        vscode.commands.executeCommand('simpleBrowser.show', url);
     }
 }
 
