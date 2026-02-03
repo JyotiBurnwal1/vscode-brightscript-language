@@ -45,8 +45,7 @@ export class BrightScriptCommands {
         rekeyAndPackageCommand.register(this.context, this, this.userInputManager);
         clearNpmPackageCacheCommand.register(this.context, this.localPackageManager);
         perfettoControlCommands.registerPerfettoControlCommands(
-            this.context,
-            () => this.getRemoteHost()
+            this.context
         );
 
         this.registerGeneralCommands();
