@@ -1,10 +1,53 @@
 import * as vscode from 'vscode';
+import type { BrightScriptLaunchConfiguration } from './DebugConfigurationProvider';
 
 export class PerfettoControlCommands {
 
     public registerPerfettoControlCommands(
         context: vscode.ExtensionContext
     ) {
+        // Auto-start tracing when debug session starts (if configured)
+        context.subscriptions.push(
+            vscode.debug.onDidStartDebugSession(async (session) => {
+                if (session.type === 'brightscript') {
+                    const config = session.configuration as BrightScriptLaunchConfiguration;
+                    if (config.profiling?.perfettoEvent?.connectOnStart) {
+                        try {
+                            await session.customRequest('autoStartTracing');
+                            await vscode.commands.executeCommand(
+                                'setContext',
+                                'brightscript.tracingActive',
+                                true
+                            );
+                        } catch (e) {
+                            console.error('Failed to auto-start tracing:', e);
+                        }
+                    }
+                }
+            })
+        );
+
+        // Auto-stop tracing when debug session ends
+        context.subscriptions.push(
+            vscode.debug.onDidTerminateDebugSession(async (session) => {
+                if (session.type === 'brightscript') {
+                    try {
+                        // Try to stop tracing - this will save the trace file
+                        await session.customRequest('stopTracing');
+                    } catch (e) {
+                        // Session may already be terminated, ignore errors
+                        console.log('Could not stop tracing on session end:', e);
+                    }
+                    // Reset the tracing context
+                    await vscode.commands.executeCommand(
+                        'setContext',
+                        'brightscript.tracingActive',
+                        false
+                    );
+                }
+            })
+        );
+
         // Start tracing
         context.subscriptions.push(
             vscode.commands.registerCommand(
