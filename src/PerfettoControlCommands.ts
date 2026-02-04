@@ -27,15 +27,6 @@ export class PerfettoControlCommands {
                     }
                 }
 
-                if (event.event === 'tracingStatus') {
-                    const active = event.body?.active === true;
-                    void vscode.commands.executeCommand(
-                        'setContext',
-                        'brightscript.tracingActive',
-                        active
-                    );
-                }
-
                 // Handle Perfetto tracing events (errors, unexpected close, etc.)
                 if (event.event === 'PerfettoTracingEvent') {
                     const { status, message } = event.body;
@@ -90,7 +81,6 @@ export class PerfettoControlCommands {
                                 'brightscript.tracingActive',
                                 true
                             );
-                            void vscode.window.showInformationMessage(response.message);
                         } else {
                             void vscode.window.showErrorMessage('Failed to start tracing');
                         }
@@ -122,7 +112,6 @@ export class PerfettoControlCommands {
                                 'brightscript.tracingActive',
                                 false
                             );
-                            void vscode.window.showInformationMessage(response.message);
                             this.openInSimpleBrowser('https://ui.perfetto.dev/#!');
                         } else {
                             void vscode.window.showErrorMessage('Failed to stop tracing');
