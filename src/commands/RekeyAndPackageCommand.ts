@@ -359,7 +359,7 @@ export class RekeyAndPackageCommand {
             let selectedIndex = configNames.indexOf(selectedConfigName);
             selectedConfig = configurations[selectedIndex];
         }
-        
+
         let workspacePath = await this.brightScriptCommands.getWorkspacePath();
         if (selectedConfig.rootDir?.includes('${workspaceFolder}')) {
             selectedConfig.rootDir = path.normalize(selectedConfig.rootDir.replace('${workspaceFolder}', workspacePath));

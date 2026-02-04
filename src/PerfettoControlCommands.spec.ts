@@ -19,9 +19,9 @@ Module.prototype.require = function hijacked(file) {
 describe('PerfettoControlCommands', () => {
     let perfettoControlCommands: PerfettoControlCommands;
     let mockContext: any;
-    let onDidReceiveDebugSessionCustomEventCallback: Function;
-    let onDidTerminateDebugSessionCallback: Function;
-    let registeredCommands: Map<string, Function>;
+    let onDidReceiveDebugSessionCustomEventCallback: (...args: any[]) => any;
+    let onDidTerminateDebugSessionCallback: (...args: any[]) => any;
+    let registeredCommands: Map<string, (...args: any[]) => any>;
 
     beforeEach(() => {
         perfettoControlCommands = new PerfettoControlCommands();

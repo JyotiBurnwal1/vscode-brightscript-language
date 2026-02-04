@@ -29,7 +29,7 @@ export class PerfettoControlCommands {
 
                 if (event.event === 'tracingStatus') {
                     const active = event.body?.active === true;
-                    vscode.commands.executeCommand(
+                    void vscode.commands.executeCommand(
                         'setContext',
                         'brightscript.tracingActive',
                         active
@@ -40,7 +40,7 @@ export class PerfettoControlCommands {
                 if (event.event === 'PerfettoTracingEvent') {
                     const { status, message } = event.body;
                     if (status === 'error' || status === 'closed') {
-                        vscode.window.showWarningMessage(`Perfetto tracing ${status}: ${message}`);
+                        void vscode.window.showWarningMessage(`Perfetto tracing ${status}: ${message}`);
                         await vscode.commands.executeCommand(
                             'setContext',
                             'brightscript.tracingActive',
@@ -77,7 +77,7 @@ export class PerfettoControlCommands {
                     const session = vscode.debug.activeDebugSession;
 
                     if (!session) {
-                        vscode.window.showErrorMessage('No active debug session');
+                        void vscode.window.showErrorMessage('No active debug session');
                         return;
                     }
 
@@ -90,12 +90,12 @@ export class PerfettoControlCommands {
                                 'brightscript.tracingActive',
                                 true
                             );
-                            vscode.window.showInformationMessage(response.message);
+                            void vscode.window.showInformationMessage(response.message);
                         } else {
-                            vscode.window.showErrorMessage('Failed to start tracing');
+                            void vscode.window.showErrorMessage('Failed to start tracing');
                         }
                     } catch (e) {
-                        vscode.window.showErrorMessage(`Failed to start tracing: ${e?.message || e}`);
+                        void vscode.window.showErrorMessage(`Failed to start tracing: ${e?.message || e}`);
                     }
                 }
             )
@@ -109,7 +109,7 @@ export class PerfettoControlCommands {
                     const session = vscode.debug.activeDebugSession;
 
                     if (!session) {
-                        vscode.window.showErrorMessage('No active debug session');
+                        void vscode.window.showErrorMessage('No active debug session');
                         return;
                     }
 
@@ -122,13 +122,13 @@ export class PerfettoControlCommands {
                                 'brightscript.tracingActive',
                                 false
                             );
-                            vscode.window.showInformationMessage(response.message);
+                            void vscode.window.showInformationMessage(response.message);
                             this.openInSimpleBrowser('https://ui.perfetto.dev/#!');
                         } else {
-                            vscode.window.showErrorMessage('Failed to stop tracing');
+                            void vscode.window.showErrorMessage('Failed to stop tracing');
                         }
                     } catch (e) {
-                        vscode.window.showErrorMessage(`Failed to stop tracing: ${e?.message || e}`);
+                        void vscode.window.showErrorMessage(`Failed to stop tracing: ${e?.message || e}`);
                     }
                 }
             )
@@ -139,7 +139,7 @@ export class PerfettoControlCommands {
      * Open URL in VS Code's built-in Simple Browser (new tab inside VS Code)
      */
     private openInSimpleBrowser(url: string): void {
-        vscode.commands.executeCommand('simpleBrowser.show', url);
+        void vscode.commands.executeCommand('simpleBrowser.show', url);
     }
 }
 
