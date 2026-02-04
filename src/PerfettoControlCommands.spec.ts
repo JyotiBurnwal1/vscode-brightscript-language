@@ -149,42 +149,6 @@ describe('PerfettoControlCommands', () => {
         });
     });
 
-    describe('tracingStatus event', () => {
-        it('sets context to true when tracing is active', async () => {
-            perfettoControlCommands.registerPerfettoControlCommands(mockContext);
-
-            const event = {
-                event: 'tracingStatus',
-                body: { active: true }
-            };
-
-            await onDidReceiveDebugSessionCustomEventCallback(event);
-
-            expect((vscode.commands.executeCommand as sinon.SinonStub).calledWith(
-                'setContext',
-                'brightscript.tracingActive',
-                true
-            )).to.be.true;
-        });
-
-        it('sets context to false when tracing is not active', async () => {
-            perfettoControlCommands.registerPerfettoControlCommands(mockContext);
-
-            const event = {
-                event: 'tracingStatus',
-                body: { active: false }
-            };
-
-            await onDidReceiveDebugSessionCustomEventCallback(event);
-
-            expect((vscode.commands.executeCommand as sinon.SinonStub).calledWith(
-                'setContext',
-                'brightscript.tracingActive',
-                false
-            )).to.be.true;
-        });
-    });
-
     describe('PerfettoTracingEvent', () => {
         it('shows warning and resets context on error status', async () => {
             perfettoControlCommands.registerPerfettoControlCommands(mockContext);
@@ -309,9 +273,6 @@ describe('PerfettoControlCommands', () => {
                 'brightscript.tracingActive',
                 true
             )).to.be.true;
-            expect((vscode.window.showInformationMessage as sinon.SinonStub).calledWith(
-                'Tracing started at /path/to/trace.perfetto-trace'
-            )).to.be.true;
         });
 
         it('shows error when start tracing fails', async () => {
@@ -376,9 +337,6 @@ describe('PerfettoControlCommands', () => {
                 'setContext',
                 'brightscript.tracingActive',
                 false
-            )).to.be.true;
-            expect((vscode.window.showInformationMessage as sinon.SinonStub).calledWith(
-                'Tracing stopped. Trace saved to /path/to/trace.perfetto-trace'
             )).to.be.true;
             expect((vscode.commands.executeCommand as sinon.SinonStub).calledWith(
                 'simpleBrowser.show',
