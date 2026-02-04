@@ -371,7 +371,7 @@ export class RekeyAndPackageCommand {
         }
 
         if (selectedConfig?.profiling?.perfettoEvent && !selectedConfig.profiling.perfettoEvent.dir) {
-            selectedConfig.profiling.perfettoEvent.dir = `${workspacePath}/profiling/`;
+            selectedConfig.profiling.perfettoEvent.dir = `${workspacePath}/profiling`;
         }
 
         if (!selectedConfig.host.includes('${')) {
