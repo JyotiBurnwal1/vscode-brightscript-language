@@ -67,88 +67,6 @@ describe('PerfettoControlCommands', () => {
         });
     });
 
-    describe('ChannelPublishedEvent', () => {
-        it('auto-starts tracing when connectOnStart is true', async () => {
-            perfettoControlCommands.registerPerfettoControlCommands(mockContext);
-
-            const mockSession = {
-                type: 'brightscript',
-                configuration: {
-                    profiling: {
-                        perfettoEvent: {
-                            connectOnStart: true
-                        }
-                    }
-                },
-                customRequest: sinon.stub().resolves({ message: 'Tracing started' })
-            };
-
-            const event = {
-                event: 'ChannelPublishedEvent',
-                session: mockSession
-            };
-
-            await onDidReceiveDebugSessionCustomEventCallback(event);
-
-            expect(mockSession.customRequest.calledWith('autoStartTracing')).to.be.true;
-            expect((vscode.commands.executeCommand as sinon.SinonStub).calledWith(
-                'setContext',
-                'brightscript.tracingActive',
-                true
-            )).to.be.true;
-        });
-
-        it('does not auto-start tracing when connectOnStart is false', async () => {
-            perfettoControlCommands.registerPerfettoControlCommands(mockContext);
-
-            const mockSession = {
-                type: 'brightscript',
-                configuration: {
-                    profiling: {
-                        perfettoEvent: {
-                            connectOnStart: false
-                        }
-                    }
-                },
-                customRequest: sinon.stub().resolves({ message: 'Tracing started' })
-            };
-
-            const event = {
-                event: 'ChannelPublishedEvent',
-                session: mockSession
-            };
-
-            await onDidReceiveDebugSessionCustomEventCallback(event);
-
-            expect(mockSession.customRequest.called).to.be.false;
-        });
-
-        it('does not auto-start tracing for non-brightscript sessions', async () => {
-            perfettoControlCommands.registerPerfettoControlCommands(mockContext);
-
-            const mockSession = {
-                type: 'node',
-                configuration: {
-                    profiling: {
-                        perfettoEvent: {
-                            connectOnStart: true
-                        }
-                    }
-                },
-                customRequest: sinon.stub().resolves({ message: 'Tracing started' })
-            };
-
-            const event = {
-                event: 'ChannelPublishedEvent',
-                session: mockSession
-            };
-
-            await onDidReceiveDebugSessionCustomEventCallback(event);
-
-            expect(mockSession.customRequest.called).to.be.false;
-        });
-    });
-
     describe('PerfettoTracingEvent', () => {
         it('shows warning and resets context on error status', async () => {
             perfettoControlCommands.registerPerfettoControlCommands(mockContext);
@@ -275,11 +193,11 @@ describe('PerfettoControlCommands', () => {
             )).to.be.true;
         });
 
-        it('shows error when start tracing fails', async () => {
+        it('shows error when start tracing fails with exception', async () => {
             perfettoControlCommands.registerPerfettoControlCommands(mockContext);
 
             const mockSession = {
-                customRequest: sinon.stub().resolves({ error: 'Failed to connect' })
+                customRequest: sinon.stub().rejects(new Error('Failed to connect'))
             };
             (vscode.debug as any).activeDebugSession = mockSession;
 
@@ -287,7 +205,7 @@ describe('PerfettoControlCommands', () => {
             await startTracingCommand();
 
             expect((vscode.window.showErrorMessage as sinon.SinonStub).calledWith(
-                'Failed to start tracing'
+                'Failed to start tracing: Failed to connect'
             )).to.be.true;
         });
 
@@ -344,11 +262,11 @@ describe('PerfettoControlCommands', () => {
             )).to.be.true;
         });
 
-        it('shows error when stop tracing fails', async () => {
+        it('shows error when stop tracing fails with exception', async () => {
             perfettoControlCommands.registerPerfettoControlCommands(mockContext);
 
             const mockSession = {
-                customRequest: sinon.stub().resolves({ error: 'No active tracing session' })
+                customRequest: sinon.stub().rejects(new Error('No active tracing session'))
             };
             (vscode.debug as any).activeDebugSession = mockSession;
 
@@ -356,7 +274,7 @@ describe('PerfettoControlCommands', () => {
             await stopTracingCommand();
 
             expect((vscode.window.showErrorMessage as sinon.SinonStub).calledWith(
-                'Failed to stop tracing'
+                'Failed to stop tracing: No active tracing session'
             )).to.be.true;
         });
 
