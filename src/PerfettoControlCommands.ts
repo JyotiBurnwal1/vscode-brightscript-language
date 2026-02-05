@@ -69,6 +69,9 @@ export class PerfettoControlCommands {
                                 'brightscript.tracingActive',
                                 true
                             );
+                        } else {
+                            void vscode.window.showErrorMessage('Failed to start tracing');
+                        }
                     } catch (e) {
                         void vscode.window.showErrorMessage(`Failed to start tracing: ${e?.message || e}`);
                     }
