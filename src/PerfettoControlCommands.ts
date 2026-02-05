@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import type { BrightScriptLaunchConfiguration } from './DebugConfigurationProvider';
 
 export class PerfettoControlCommands {
 
@@ -9,28 +8,17 @@ export class PerfettoControlCommands {
         // Auto-start tracing after the channel is published (app is deployed and ready)
         context.subscriptions.push(
             vscode.debug.onDidReceiveDebugSessionCustomEvent(async (event) => {
-                if (event.event === 'ChannelPublishedEvent' && event.session.type === 'brightscript') {
-                    const config = event.session.configuration as BrightScriptLaunchConfiguration;
-                    if (config.profiling?.perfettoEvent?.connectOnStart) {
-                        try {
-                            const response = await event.session.customRequest('autoStartTracing');
-                            if (response?.message) {
-                                await vscode.commands.executeCommand(
-                                    'setContext',
-                                    'brightscript.tracingActive',
-                                    true
-                                );
-                            }
-                        } catch (e) {
-                            console.error('Failed to auto-start tracing:', e);
-                        }
-                    }
-                }
 
-                // Handle Perfetto tracing events (errors, unexpected close, etc.)
+                // Handle Perfetto tracing events (started, stopped, errors, unexpected close, etc.)
                 if (event.event === 'PerfettoTracingEvent') {
                     const { status, message } = event.body;
-                    if (status === 'error' || status === 'closed') {
+                    if (status === 'started') {
+                        await vscode.commands.executeCommand(
+                            'setContext',
+                            'brightscript.tracingActive',
+                            true
+                        );
+                    } else if (status === 'error' || status === 'closed') {
                         void vscode.window.showWarningMessage(`Perfetto tracing ${status}: ${message}`);
                         await vscode.commands.executeCommand(
                             'setContext',
@@ -81,9 +69,6 @@ export class PerfettoControlCommands {
                                 'brightscript.tracingActive',
                                 true
                             );
-                        } else {
-                            void vscode.window.showErrorMessage('Failed to start tracing');
-                        }
                     } catch (e) {
                         void vscode.window.showErrorMessage(`Failed to start tracing: ${e?.message || e}`);
                     }
