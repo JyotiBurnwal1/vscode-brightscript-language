@@ -17,16 +17,16 @@ export class HeapSnapshotCommands {
                         return;
                     }
 
-                    // try {
-                    //     await session.customRequest('captureSnapshot');
+                    try {
+                        await session.customRequest('captureSnapshot');
                         await vscode.commands.executeCommand(
                             'setContext',
                             'brightscript.capturingSnapshot',
                             true
                         );
-                    // } catch (e) {
-                    //     void vscode.window.showErrorMessage(`Failed to start capturing snapshot: ${e?.message || e}`);
-                    // }
+                    } catch (e) {
+                        void vscode.window.showErrorMessage(`Failed to start capturing snapshot: ${e?.message || e}`);
+                    }
                 }
             )
         );
@@ -43,28 +43,28 @@ export class HeapSnapshotCommands {
                         return;
                     }
 
-                    // try {
-                    //     await session.customRequest('stopCapturingSnapshot');
+                    try {
+                        await session.customRequest('stopCapturingSnapshot');
                         await vscode.commands.executeCommand(
                             'setContext',
                             'brightscript.capturingSnapshot',
                             false
                         );
-                        // this.openInSimpleBrowser('https://ui.perfetto.dev/#!');
-                    // } catch (e) {
-                        // void vscode.window.showErrorMessage(`Failed to stop capturing snapshot: ${e?.message || e}`);
-                    // }
+                        this.openInSimpleBrowser('');
+                    } catch (e) {
+                        void vscode.window.showErrorMessage(`Failed to stop capturing snapshot: ${e?.message || e}`);
+                    }
                 }
             )
         );
     }
 
-    // /**
-    //  * Open URL in VS Code's built-in Simple Browser (new tab inside VS Code)
-    //  */
-    // private openInSimpleBrowser(url: string): void {
-    //     void vscode.commands.executeCommand('simpleBrowser.show', url);
-    // }
+    /**
+     * Open URL in VS Code's built-in Simple Browser (new tab inside VS Code)
+     */
+    private openInSimpleBrowser(url: string): void {
+        void vscode.commands.executeCommand('simpleBrowser.show', url);
+    }
 }
 
 export const heapSnapshotCommands = new HeapSnapshotCommands();
