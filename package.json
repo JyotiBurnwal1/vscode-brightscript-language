@@ -229,6 +229,18 @@
                     "group": "navigation"
                 }
             ],
+            "debug/toolBar": [
+                {
+                    "command": "extension.brightscript.captureSnapshot",
+                    "group": "navigation@100",
+                    "when": "inDebugMode && !brightscript.capturingSnapshot"
+                },
+                {
+                    "command": "extension.brightscript.stopCapturingSnapshot",
+                    "group": "navigation@100",
+                    "when": "inDebugMode && brightscript.capturingSnapshot"
+                }
+            ],
             "view/title": [
                 {
                     "command": "extension.brightscript.rendezvous.toggleSortMethod",
@@ -2692,6 +2704,16 @@
             }
         ],
         "commands": [
+            {
+                "command": "extension.brightscript.captureSnapshot",
+                "title": "Capture heap snapshot",
+                "icon": "./images/icons/capture-snapshot.svg"
+            },
+            {
+                "command": "extension.brightscript.stopCapturingSnapshot",
+                "title": "Stop capture",
+                "icon": "./images/icons/stop-capturing-snapshot.svg"
+            },
             {
                 "command": "extension.brightscript.showReleaseNotes",
                 "title": "Show Release Notes",
